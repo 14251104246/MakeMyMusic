@@ -1,15 +1,9 @@
-package com.zehua.makemusic.resource;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.util.Random;
-
-import static org.junit.Assert.*;
 
 public class PreTest {
     final String PERFIX = "G:\\music\\";
@@ -21,80 +15,21 @@ public class PreTest {
         FileInputStream inputStream = new FileInputStream(fadedWav);
         FileOutputStream outputStream = new FileOutputStream(outWav);
 
-        byte[] head = new byte[1024];
+        byte[] head = new byte[656];
         inputStream.read(head,0,head.length);
         outputStream.write(head);
 
-        byte[] bufffer = new byte[1024];
+        byte[] buffer = new byte[1024];
         for (int i =1; i>0;){
-            i= inputStream.read(bufffer);
-            for(int cur =0;cur<bufffer.length;cur++){
-                bufffer[cur]= (byte) (bufffer[cur]*Math.random()+bufffer[cur]);
+            i= inputStream.read(buffer);
+            for(int cur =0;cur<buffer.length;cur++){
+                buffer[cur]= (byte) (buffer[cur]*Math.random()+buffer[cur]);
             }
-            outputStream.write(bufffer);
+            outputStream.write(buffer);
         }
     }
 
-    public static class WaveHeader {
-        public final char fileID[] = {'R', 'I', 'F', 'F'};
-        public int fileLength;
-        public char wavTag[] = {'W', 'A', 'V', 'E'};;
-        public char FmtHdrID[] = {'f', 'm', 't', ' '};
-        public int FmtHdrLeth;
-        public short FormatTag;
-        public short Channels;
-        public int SamplesPerSec;
-        public int AvgBytesPerSec;
-        public short BlockAlign;
-        public short BitsPerSample;
-        public char DataHdrID[] = {'d','a','t','a'};
-        public int DataHdrLeth;
 
-        public byte[] getHeader() throws IOException {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            WriteChar(bos, fileID);
-            WriteInt(bos, fileLength);
-            WriteChar(bos, wavTag);
-            WriteChar(bos, FmtHdrID);
-            WriteInt(bos,FmtHdrLeth);
-            WriteShort(bos,FormatTag);
-            WriteShort(bos,Channels);
-            WriteInt(bos,SamplesPerSec);
-            WriteInt(bos,AvgBytesPerSec);
-            WriteShort(bos,BlockAlign);
-            WriteShort(bos,BitsPerSample);
-            WriteChar(bos,DataHdrID);
-            WriteInt(bos,DataHdrLeth);
-            bos.flush();
-            byte[] r = bos.toByteArray();
-            bos.close();
-            return r;
-        }
-
-        public static void WriteShort(ByteArrayOutputStream bos, int s) throws IOException {
-            byte[] mybyte = new byte[2];
-            mybyte[1] =(byte)( (s << 16) >> 24 );
-            mybyte[0] =(byte)( (s << 24) >> 24 );
-            bos.write(mybyte);
-        }
-
-
-        public static void WriteInt(ByteArrayOutputStream bos, int n) throws IOException {
-            byte[] buf = new byte[4];
-            buf[3] =(byte)( n >> 24 );
-            buf[2] =(byte)( (n << 8) >> 24 );
-            buf[1] =(byte)( (n << 16) >> 24 );
-            buf[0] =(byte)( (n << 24) >> 24 );
-            bos.write(buf);
-        }
-
-        public static void WriteChar(ByteArrayOutputStream bos, char[] id) {
-            for (int i=0; i<id.length; i++) {
-                char c = id[i];
-                bos.write(c);
-            }
-        }
-    }
     @Ignore
     public void testCombinePlayMp3() throws Exception {
         File fadedMp3 = new File(PERFIX+"Faded.mp3");
